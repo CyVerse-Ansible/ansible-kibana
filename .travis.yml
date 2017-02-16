@@ -1,0 +1,40 @@
+---
+sudo: required
+services:
+  - docker
+env:
+  - distribution: ubuntu
+    version: 16.04
+    init: /lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
+before_install:
+    # Pull image
+    - 'sudo docker pull cyverse/ansible-test:latest-${distribution}-${version}'
+script:
+    - container_id=$(mktemp)
+      ###############################################
+      #### TEST: Ansible Syntax Check
+      ###############################################
+    - 'sudo docker run -it --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} cyverse/ansible-test:latest-${distribution}-${version} "${init}" > "${container_id}"'
+    - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -f -r /etc/ansible/roles/role_under_test/tests/requirements.yml'
+      ## TEST: Ansible syntax check.
+    - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test-1.yml --syntax-check'
+
+      ############################################################################
+      #### TEST 1
+      ####   - Verify Default Directory layout 
+      ############################################################################
+
+    - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test-1.yml'
+
+        # Clean up
+    - 'sudo docker stop "$(cat ${container_id})"'
+
+notifications:
+  webhooks:
+    urls:
+       - https://galaxy.ansible.com/api/v1/notifications/
+    on_success: always
+    on_failure: never
+

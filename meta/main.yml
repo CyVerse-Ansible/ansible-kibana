@@ -1,0 +1,38 @@
+galaxy_info:
+  author: Jonathan Strootman 
+  description: |
+     Performs basic installation and configuration of a Kibana service.
+  company: https://cyverse.org
+  license: See LICENSE.md
+  min_ansible_version: 2.2.0
+
+  # If this a Container Enabled role, provide the minimum Ansible Container version.
+  # min_ansible_container_version:
+
+  # Optionally specify the branch Galaxy will use when accessing the GitHub
+  # repo for this role. During role install, if no tags are available,
+  # Galaxy will use this branch. During import Galaxy will access files on
+  # this branch. If Travis integration is configured, only notifications for this
+  # branch will be accepted. Otherwise, in all cases, the repo's default branch
+  # (usually master) will be used.
+  #github_branch:
+
+  platforms:
+   - name: Ubuntu
+     versions:
+     - xenial
+
+  galaxy_tags: 
+    - kibana
+    - elastic
+    - elasticstack
+    - elasticsearch
+
+dependencies: 
+  - role: CyVerse-Ansible.elastic-stack-install
+    ES_PACKAGE: kibana
+    SYSD_FILE_TEMPLATE_SRC: "{{role_path}}/templates/systemd/kibana.service.j2"
+    ES_CONFIG_CONTENTS: "{{kibana_cfg}}"
+    es_user: "{{kibana_user}}"
+    es_group: "{{kibana_group}}"
+
