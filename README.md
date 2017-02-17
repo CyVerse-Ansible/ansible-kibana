@@ -2,6 +2,8 @@ ansible-kibana
 ==============
 [![Build Status](https://travis-ci.org/CyVerse-Ansible/ansible-kibana.svg?branch=master)](https://travis-ci.org/CyVerse-Ansible/ansible-kibana)
 
+ [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-kibana-blue.svg)](https://galaxy.ansible.com/CyVerse-Ansible/kibana/)
+
 A brief description of the role goes here.
 
 Requirements
